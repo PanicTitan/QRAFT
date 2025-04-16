@@ -4,7 +4,7 @@
 
 A web-based application demonstrating file transfer between two devices *solely* using a sequence of QR codes displayed on the sender's screen and scanned by the receiver's camera. No network connection (beyond loading the initial web page) is required between the devices during the transfer itself.
 
-`[showcase.png]`
+![See the app](showcase.png)
 
 ## Features
 
@@ -75,7 +75,7 @@ A web-based application demonstrating file transfer between two devices *solely*
 
 You can try a live demo of QRAFT here:
 
-**[qr-air-gap-file-transfer.web.app]**
+**[QRAFT](qr-air-gap-file-transfer.web.app)**
 
 (If you want to run it locally, follow the standard procedure: clone the repo, `npm install`, `npm run dev:host`)
 
