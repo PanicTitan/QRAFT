@@ -4,6 +4,7 @@
  * - Initializes views and routing.
  * - Sets up global event listeners for UI elements (navigation, buttons, inputs).
  * - Coordinates interactions between sender, receiver, state, and DOM modules.
+ * - Generates and manages the Receiver Link QR code.
  */
 
 import "./style.css"; // Import main stylesheet
@@ -11,6 +12,88 @@ import * as dom from "./dom"; // Import DOM element references
 import * as state from "./state"; // Import state management
 import * as sender from "./sender"; // Import sender logic
 import * as receiver from "./receiver"; // Import receiver logic
+import QRCodeStyling, {
+    Options as QRCodeStylingOptions,
+    ErrorCorrectionLevel,
+} from "qr-code-styling"; // Import QR styling library
+
+// --- Receiver Link QR Code Logic ---
+
+let receiverLinkQrInstanceLarge: QRCodeStyling | null = null; // Instance for the large modal QR
+const receiverUrl = `${window.location.origin}${window.location.pathname}#receiver`; // Construct receiver URL robustly
+
+/**
+ * Generates the small QR code linking to the receiver page.
+ */
+function generateReceiverLinkQrSmall(): void {
+    const options: QRCodeStylingOptions = {
+        width: 40,
+        height: 40,
+        data: receiverUrl,
+        margin: 2, // Minimal margin for small size
+        qrOptions: {
+            errorCorrectionLevel: "L", // Low correction is fine for a simple URL
+            mode: "Byte",
+        },
+        dotsOptions: { type: "square", color: "#444" }, // Dark grey dots
+        backgroundOptions: { color: "#ffffff" },
+    };
+
+    // Clear previous content (if any)
+    dom.receiverLinkQrContainer.innerHTML = "";
+    const qrInstance = new QRCodeStyling(options);
+    qrInstance.append(dom.receiverLinkQrContainer);
+    console.log("Generated small receiver link QR code for:", receiverUrl);
+}
+
+/**
+ * Generates the large QR code for the receiver link inside the modal.
+ */
+function generateReceiverLinkQrLarge(): void {
+    const options: QRCodeStylingOptions = {
+        width: 300,
+        height: 300,
+        data: receiverUrl,
+        margin: 10,
+        qrOptions: {
+            errorCorrectionLevel: "M", // Medium correction for better scanning
+            mode: "Byte",
+        },
+        dotsOptions: { type: "square", color: "#000000" },
+        backgroundOptions: { color: "#ffffff" },
+    };
+
+    // Clear previous large QR if exists
+    dom.receiverLinkQrCodeLarge.innerHTML = "";
+
+    // Create and append new instance
+    receiverLinkQrInstanceLarge = new QRCodeStyling(options);
+    receiverLinkQrInstanceLarge.append(dom.receiverLinkQrCodeLarge);
+    console.log("Generated large receiver link QR code.");
+}
+
+/**
+ * Shows the modal containing the large receiver link QR code.
+ */
+function showReceiverLinkQrModal(): void {
+    // Populate the URL text
+    dom.receiverLinkQrUrl.textContent = receiverUrl;
+    // Generate the large QR code *when showing* the modal
+    generateReceiverLinkQrLarge();
+    // Show the overlay
+    dom.receiverLinkQrOverlay.classList.remove("hidden");
+}
+
+/**
+ * Hides the receiver link QR code modal.
+ */
+function hideReceiverLinkQrModal(): void {
+    dom.receiverLinkQrOverlay.classList.add("hidden");
+    // Optional: Clear the large QR instance when hiding to save memory
+    dom.receiverLinkQrCodeLarge.innerHTML = "";
+    receiverLinkQrInstanceLarge = null;
+    console.log("Hid large receiver link QR code modal.");
+}
 
 // --- View Management ---
 
@@ -28,7 +111,8 @@ function showView(viewId: "sender" | "receiver"): void {
     // Stop sender transfer if active
     if (
         currentState.senderTransferPhase !== "idle" &&
-        currentState.senderTransferPhase !== "ready"
+        currentState.senderTransferPhase !== "ready" &&
+        currentState.senderTransferPhase !== "processing"
     ) {
         // Stop transfer but keep loaded files/data
         console.log("Sender transfer/display in progress, stopping...");
@@ -55,7 +139,7 @@ function showView(viewId: "sender" | "receiver"): void {
                 false
             );
             dom.startTransferBtn.disabled = false;
-        } else {
+        } else if (currentState.senderTransferPhase === "idle") {
             sender.updateSenderStatus("Ready. Select file/folder.", false);
             dom.startTransferBtn.disabled = true;
             sender.displayEstimates(); // Show initial estimate text
@@ -84,6 +168,19 @@ function setupEventListeners(): void {
     dom.showSenderBtn.addEventListener("click", () => showView("sender"));
     dom.showReceiverBtn.addEventListener("click", () => showView("receiver"));
 
+    // --- Receiver Link QR Code Modal ---
+    dom.receiverLinkQrContainer.addEventListener(
+        "click",
+        showReceiverLinkQrModal
+    );
+    dom.receiverLinkCloseBtn.addEventListener("click", hideReceiverLinkQrModal);
+    // Hide modal if user clicks on the overlay background
+    dom.receiverLinkQrOverlay.addEventListener("click", (event) => {
+        if (event.target === dom.receiverLinkQrOverlay) {
+            hideReceiverLinkQrModal();
+        }
+    });
+
     // --- Sender View ---
     dom.fileInput.addEventListener("change", sender.handleFileSelect);
     dom.startTransferBtn.addEventListener("click", sender.startTransfer);
@@ -110,7 +207,7 @@ function setupEventListeners(): void {
         // If transfer is active, update modal buttons/text immediately? (Handled within displayNextChunk logic)
     });
 
-    // --- QR Modal (Sender) ---
+    // --- QR Modal (Sender - Main Transfer) ---
     dom.nextChunkBtn.addEventListener("click", () => {
         // Determine action based on current sender phase
         const currentPhase = state.getState().senderTransferPhase;
@@ -122,12 +219,13 @@ function setupEventListeners(): void {
         } else if (currentPhase === "final_qr_displayed") {
             // Action after final QR shown (manual): show options or display final confirmation
             const nextIndex = state.getState().currentChunkIndex;
-            if (nextIndex > state.getState().totalDataChunks) {
-                // Final 'f' was displayed
-                sender.handlePostFinalState(); // Go to resend options
-            } else {
-                // Specific send finished, button shows "Show Final QR"
+            // Check if final QR was displayed after specific send or main transfer
+            if (dom.nextChunkBtn.textContent?.includes("Show Final QR")) {
+                // Check button text as context
                 sender.displayFinalConfirmationQR();
+            } else {
+                // Button should say "Show Resend Options"
+                sender.handlePostFinalState(); // Go to resend options
             }
         } else {
             console.warn(
@@ -168,7 +266,7 @@ function setupEventListeners(): void {
         if (hash === "#receiver") {
             showView("receiver");
         } else {
-            // Default to sender for '#' or unknown hash
+            // Default to sender for '#', empty hash, or unknown hash
             showView("sender");
         }
     });
@@ -180,7 +278,10 @@ function setupEventListeners(): void {
  * Initializes the application on page load.
  */
 function initializeApp(): void {
-    console.log("Initializing QR File Transfer App (State Refactor Version)");
+    console.log("Initializing QRAFT: QR Air-gap File Transfer App");
+
+    // Generate the small receiver link QR code on initial load
+    generateReceiverLinkQrSmall();
 
     // Set initial default chunk size based on default EC level
     sender.updateChunkSizeDefaults();

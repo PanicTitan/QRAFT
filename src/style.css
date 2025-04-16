@@ -24,7 +24,9 @@ body {
     text-align: center;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     color: #343a40;
     margin-top: 0; /* Remove default top margin for headings */
     margin-bottom: 0.8em; /* Added bottom margin */
@@ -77,8 +79,8 @@ select {
 
 input[type="number"],
 input[type="text"] {
-     width: auto; /* Allow natural width */
-     min-width: 80px; /* Ensure number inputs aren't too small */
+    width: auto; /* Allow natural width */
+    min-width: 80px; /* Ensure number inputs aren't too small */
 }
 
 input[type="checkbox"] {
@@ -93,7 +95,6 @@ input[type="checkbox"] {
     color: #6c757d;
     margin-top: 0.2em;
 }
-
 
 /* --- Buttons --- */
 button {
@@ -110,7 +111,8 @@ button {
 /* Default button style */
 #navigation button,
 #senderView > div > button, /* Target buttons directly in sender view divs */
-#receiverView > button {   /* Target buttons directly in receiver view */
+#receiverView > button {
+    /* Target buttons directly in receiver view */
     background-color: #007bff;
     color: white;
 }
@@ -120,11 +122,10 @@ button {
     background-color: #0056b3;
 }
 
-
 button:disabled {
     cursor: not-allowed;
     opacity: 0.65;
-     background-color: #6c757d; /* Grey out disabled buttons */
+    background-color: #6c757d; /* Grey out disabled buttons */
 }
 
 /* Specific Button Styles */
@@ -135,14 +136,12 @@ button:disabled {
     background-color: #1e7e34;
 }
 
-
 #startScanBtn {
-     background-color: #17a2b8; /* Teal for start scan */
+    background-color: #17a2b8; /* Teal for start scan */
 }
 #startScanBtn:hover:not(:disabled) {
-     background-color: #117a8b;
+    background-color: #117a8b;
 }
-
 
 #stopScanBtn {
     background-color: #dc3545; /* Red for stop scan */
@@ -151,14 +150,15 @@ button:disabled {
     background-color: #b02a37;
 }
 
-
 /* --- Sender Status/Progress/Estimates --- */
-#senderStatus, #receiverStatus {
+#senderStatus,
+#receiverStatus {
     font-weight: bold;
     min-height: 1.2em; /* Prevent layout jumps */
     margin-top: 1em;
 }
-#senderProgress, #receivedFileInfo {
+#senderProgress,
+#receivedFileInfo {
     color: #495057;
     min-height: 1.2em;
 }
@@ -176,7 +176,6 @@ button:disabled {
     margin-top: 8px;
     min-height: 1.1em;
 }
-
 
 /* --- Receiver Video & Progress --- */
 #receiverVideoContainer {
@@ -261,7 +260,7 @@ button:disabled {
     flex-direction: column;
     align-items: center;
     overflow: auto; /* Allow scrolling if content overflows */
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 #qrDisplayArea {
@@ -294,7 +293,6 @@ button:disabled {
     margin: 0 auto; /* Center if needed */
 }
 
-
 /* Modal Info Lines (Status, Time, Rate) */
 .modal-info {
     min-height: 1.3em; /* Ensure consistent height */
@@ -314,7 +312,7 @@ button:disabled {
 
 /* Use the shared transfer-rate class */
 #qrModalTransferRate {
-     margin-bottom: 10px; /* Space before manual button if shown */
+    margin-bottom: 10px; /* Space before manual button if shown */
 }
 
 /* --- Modal Buttons --- */
@@ -325,7 +323,7 @@ button:disabled {
     min-width: 150px; /* Give manual button decent width */
 }
 #qrDisplayArea #nextChunkBtn:hover:not(:disabled) {
-     background-color: #5a6268;
+    background-color: #5a6268;
 }
 
 #qrModalContent .modal-stop-button {
@@ -338,7 +336,6 @@ button:disabled {
 #qrModalContent .modal-stop-button:hover:not(:disabled) {
     background-color: #b02a37;
 }
-
 
 /* --- Sender Post-Transfer Options (in Modal) --- */
 #senderPostTransferOptions {
@@ -365,11 +362,11 @@ button:disabled {
     margin-bottom: 5px; /* Reduced margin */
 }
 
-#senderPostTransferOptions > div { /* Target direct div children */
-     margin-bottom: 10px; /* Reduced spacing between sections */
-     text-align: center; /* Center content within divs */
+#senderPostTransferOptions > div {
+    /* Target direct div children */
+    margin-bottom: 10px; /* Reduced spacing between sections */
+    text-align: center; /* Center content within divs */
 }
-
 
 /* Post-transfer button styling */
 #senderPostTransferOptions button {
@@ -382,14 +379,12 @@ button:disabled {
     background-color: #0056b3;
 }
 
-
 #senderPostTransferOptions #finishTransferBtn {
     background-color: #28a745; /* Green */
 }
 #senderPostTransferOptions #finishTransferBtn:hover:not(:disabled) {
     background-color: #1e7e34;
 }
-
 
 #senderPostTransferOptions #resendAllBtn {
     background-color: #ffc107; /* Yellow */
@@ -398,7 +393,6 @@ button:disabled {
 #senderPostTransferOptions #resendAllBtn:hover:not(:disabled) {
     background-color: #d39e00;
 }
-
 
 #senderPostTransferOptions #sendSpecificBtn {
     background-color: #17a2b8; /* Teal */
@@ -431,11 +425,208 @@ button:disabled {
     margin-left: 5px;
 }
 
-
 /* Debug area styling */
 #receiverDebug {
     font-size: 0.8em;
     color: #dc3545; /* Red for errors/warnings */
     margin-top: 10px;
     min-height: 1em;
+}
+
+/**
+ * @file style.css
+ * Main stylesheet for the QR Code File Transfer application.
+ */
+
+/* ... (previous styles remain the same up to #app) ... */
+
+#app {
+    max-width: 700px;
+    margin: 1em auto; /* Add margin top/bottom */
+    padding: 1.5em;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* --- Title Area --- */
+#title-area {
+    display: flex;
+    align-items: center; /* Vertically align title and small QR */
+    justify-content: center; /* Center horizontally */
+    margin-bottom: 0.2em; /* Reduce space below title area */
+}
+
+#title-area h1 {
+    margin: 0 10px 0 0; /* Remove default margins, add right margin */
+    font-size: 1.8em; /* Slightly smaller main title */
+    color: #343a40;
+    align-self: stretch;
+}
+
+.subtitle {
+    font-size: 0.9em;
+    color: #6c757d;
+    margin: 0 0 1.5em 0; /* Space below subtitle */
+    text-align: center;
+}
+
+#receiverLinkQrContainer {
+    width: 40px;
+    height: 40px;
+    padding: 2px;
+    border: 1px solid #ced4da;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+    display: flex; /* Use flex to center inner canvas/svg */
+    justify-content: center;
+    align-items: center;
+    background-color: white; /* Ensure white background */
+}
+#receiverLinkQrContainer:hover {
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    border-color: #a3d1ff;
+}
+/* Style the QR generated INSIDE the small container */
+#receiverLinkQrContainer canvas,
+#receiverLinkQrContainer svg {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+}
+
+/* --- Navigation --- */
+#navigation {
+    margin-bottom: 1em; /* Ensure space below nav buttons */
+}
+
+/* ... (rest of the styles for views, forms, buttons, etc., remain the same) ... */
+
+/* --- Modal Overlays --- */
+/* Generic overlay style */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); /* Darker overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+/* Generic modal content style */
+.modal-content {
+    /* Applied to both modal types */
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 95vw; /* Max width relative to viewport */
+    max-height: 95vh; /* Max height relative to viewport */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto; /* Allow scrolling if content overflows */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative; /* Needed for absolute positioning of close button */
+}
+
+/* Generic close button style */
+.modal-close-button {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2em;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s ease;
+}
+.modal-close-button:hover {
+    color: #333;
+}
+
+/* --- Transfer QR Modal --- */
+#qrModalContent {
+    /* Inherits .modal-content styles */
+}
+#qrDisplayArea {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px; /* Space below QR area */
+}
+#qrCodeContainer {
+    /* Container for TRANSFER QR */
+    width: 100%;
+    max-width: min(70vh, 80vw);
+    height: auto; /* Maintain aspect ratio */
+    margin: 0 auto 15px auto; /* Center and margin below */
+    line-height: 0; /* Prevent extra space if empty */
+    background-color: white; /* Ensure white background for QR */
+    padding: 5px; /* Small padding around the QR */
+    box-sizing: border-box;
+}
+#qrCodeContainer canvas,
+#qrCodeContainer svg {
+    display: block;
+    max-width: 100%; /* Scale within container */
+    height: auto !important; /* Maintain aspect ratio (override library styles if needed) */
+    margin: 0 auto; /* Center if needed */
+}
+
+/* ... (styles for qrModalStatus, time-estimate, transfer-rate, nextChunkBtn, modal-stop-button remain the same) ... */
+/* ... (styles for senderPostTransferOptions, resend-manual-mode remain the same) ... */
+
+/* --- Receiver Link QR Modal --- */
+#receiverLinkQrModalContent {
+    /* Inherits .modal-content styles */
+    max-width: 500px; /* More constrained width for this modal */
+    padding-top: 40px; /* More padding at top because of close button */
+}
+#receiverLinkQrCodeLarge {
+    /* Container for LARGE Receiver Link QR */
+    width: 100%;
+    max-width: 300px; /* Fixed max width */
+    height: auto;
+    margin: 15px auto;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #eee;
+    box-sizing: border-box;
+}
+#receiverLinkQrCodeLarge canvas,
+#receiverLinkQrCodeLarge svg {
+    display: block;
+    max-width: 100%;
+    height: auto !important;
+    margin: 0 auto;
+}
+.receiver-qr-url {
+    font-family: monospace;
+    font-size: 0.9em;
+    color: #0056b3;
+    word-break: break-all; /* Break long URLs */
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: #e9ecef;
+    border-radius: 3px;
+    display: inline-block; /* Allow background */
+    max-width: 90%;
+}
+
+.mobile-qr-code-title {
+    color: white;
 }

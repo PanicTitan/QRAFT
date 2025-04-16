@@ -13,6 +13,11 @@ export const receiverView = document.getElementById('receiverView')!;
 export const showSenderBtn = document.getElementById('showSenderBtn')!;
 export const showReceiverBtn = document.getElementById('showReceiverBtn')!;
 
+// --- Title Area ---
+export const titleArea = document.getElementById('title-area')!; // Added
+/** Container for the small QR code linking to the receiver page. */
+export const receiverLinkQrContainer = document.getElementById('receiverLinkQrContainer')!; // Added
+
 // --- Sender View Elements ---
 export const fileInput = document.getElementById('fileInput') as HTMLInputElement;
 export const errorCorrectionLevelSelect = document.getElementById('errorCorrectionLevel') as HTMLSelectElement;
@@ -39,11 +44,11 @@ export const missingChunksList = document.getElementById('missingChunksList')!;
 export const missingChunksCount = document.getElementById('missingChunksCount')!;
 export const receiverTransferRate = document.getElementById('receiverTransferRate')!;
 
-// --- QR Code Modal Elements ---
+// --- Main Transfer QR Code Modal Elements ---
 export const qrOverlay = document.getElementById('qrOverlay')!;
 export const qrModalContent = document.getElementById('qrModalContent')!;
 export const qrDisplayArea = document.getElementById('qrDisplayArea')!;
-/** Dedicated container where the QR code canvas/svg will be injected. */
+/** Dedicated container where the data QR code canvas/svg will be injected. */
 export const qrCodeContainer = document.getElementById('qrCodeContainer')!;
 export const qrModalStatus = document.getElementById('qrModalStatus')!;
 export const qrModalTimeEstimate = document.getElementById('qrModalTimeEstimate')!;
@@ -51,7 +56,7 @@ export const qrModalTransferRate = document.getElementById('qrModalTransferRate'
 export const nextChunkBtn = document.getElementById('nextChunkBtn') as HTMLButtonElement; // For manual mode steps
 export const stopTransferBtn = document.getElementById('stopTransferBtn') as HTMLButtonElement; // In modal
 
-// --- Sender Post-Transfer Options (within Modal) ---
+// --- Sender Post-Transfer Options (within Main Modal) ---
 export const senderPostTransferOptions = document.getElementById('senderPostTransferOptions')!;
 export const finishTransferBtn = document.getElementById('finishTransferBtn') as HTMLButtonElement;
 export const resendAllBtn = document.getElementById('resendAllBtn') as HTMLButtonElement;
@@ -59,4 +64,16 @@ export const specificChunksInput = document.getElementById('specificChunksInput'
 export const sendSpecificBtn = document.getElementById('sendSpecificBtn') as HTMLButtonElement;
 export const sendSpecificStatus = document.getElementById('sendSpecificStatus')!;
 /** Checkbox within post-transfer options to control manual mode FOR RESENDS. */
-export const resendManualModeCheckbox = document.getElementById('resendManualModeCheckbox') as HTMLInputElement; // Added export
+export const resendManualModeCheckbox = document.getElementById('resendManualModeCheckbox') as HTMLInputElement;
+
+// --- Receiver Link QR Code Modal Elements ---
+/** Overlay for the Receiver Link QR Code modal. */
+export const receiverLinkQrOverlay = document.getElementById('receiverLinkQrOverlay')!; // Added
+/** Content area of the Receiver Link QR Code modal. */
+export const receiverLinkQrModalContent = document.getElementById('receiverLinkQrModalContent')!; // Added
+/** Button to close the Receiver Link QR Code modal. */
+export const receiverLinkCloseBtn = document.getElementById('receiverLinkCloseBtn')!; // Added
+/** Container where the large Receiver Link QR code is displayed. */
+export const receiverLinkQrCodeLarge = document.getElementById('receiverLinkQrCodeLarge')!; // Added
+/** Paragraph element to display the receiver URL text. */
+export const receiverLinkQrUrl = document.getElementById('receiverLinkQrUrl')!; // Added
