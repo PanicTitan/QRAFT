@@ -1,0 +1,441 @@
+/**
+ * @file style.css
+ * Main stylesheet for the QR Code File Transfer application.
+ */
+
+/* --- Basic Setup & Typography --- */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+        Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    padding: 1em;
+    line-height: 1.6;
+    background-color: #f8f9fa;
+    color: #212529;
+    margin: 0; /* Remove default body margin */
+}
+
+#app {
+    max-width: 700px;
+    margin: 1em auto; /* Add margin top/bottom */
+    padding: 1.5em;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1, h2, h3 {
+    color: #343a40;
+    margin-top: 0; /* Remove default top margin for headings */
+    margin-bottom: 0.8em; /* Added bottom margin */
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #dee2e6;
+    margin: 1.5em 0;
+}
+
+/* --- View Switching --- */
+.view {
+    margin-top: 1.5em;
+    padding: 1.5em;
+    border: 1px solid #e9ecef;
+    border-radius: 5px;
+    background-color: #f8f9fa; /* Slightly different background for views */
+}
+
+/* Utility class to hide elements */
+.hidden {
+    display: none !important;
+}
+
+/* --- Form Elements --- */
+label {
+    margin-right: 0.5em;
+    font-weight: 500;
+    display: inline-block; /* Ensure labels align well */
+    margin-bottom: 0.3em;
+}
+
+/* Consistent spacing for form control containers */
+div {
+    margin-bottom: 1em;
+}
+
+input[type="file"],
+input[type="number"],
+input[type="text"],
+select {
+    padding: 0.5em 0.8em;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    font-size: 0.95em;
+    margin-top: 0.2em; /* Space below label */
+}
+
+input[type="number"],
+input[type="text"] {
+     width: auto; /* Allow natural width */
+     min-width: 80px; /* Ensure number inputs aren't too small */
+}
+
+input[type="checkbox"] {
+    margin-left: 0.3em;
+    vertical-align: middle; /* Align checkbox with label text */
+}
+
+/* Add spacing for the small text hint */
+#chunkSize + small {
+    display: block;
+    font-size: 0.8em;
+    color: #6c757d;
+    margin-top: 0.2em;
+}
+
+
+/* --- Buttons --- */
+button {
+    padding: 0.6em 1.2em;
+    margin: 0.5em;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.95em;
+    font-weight: 500;
+    transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+/* Default button style */
+#navigation button,
+#senderView > div > button, /* Target buttons directly in sender view divs */
+#receiverView > button {   /* Target buttons directly in receiver view */
+    background-color: #007bff;
+    color: white;
+}
+#navigation button:hover,
+#senderView > div > button:hover,
+#receiverView > button:hover {
+    background-color: #0056b3;
+}
+
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+     background-color: #6c757d; /* Grey out disabled buttons */
+}
+
+/* Specific Button Styles */
+#startTransferBtn {
+    background-color: #28a745; /* Green for start */
+}
+#startTransferBtn:hover:not(:disabled) {
+    background-color: #1e7e34;
+}
+
+
+#startScanBtn {
+     background-color: #17a2b8; /* Teal for start scan */
+}
+#startScanBtn:hover:not(:disabled) {
+     background-color: #117a8b;
+}
+
+
+#stopScanBtn {
+    background-color: #dc3545; /* Red for stop scan */
+}
+#stopScanBtn:hover:not(:disabled) {
+    background-color: #b02a37;
+}
+
+
+/* --- Sender Status/Progress/Estimates --- */
+#senderStatus, #receiverStatus {
+    font-weight: bold;
+    min-height: 1.2em; /* Prevent layout jumps */
+    margin-top: 1em;
+}
+#senderProgress, #receivedFileInfo {
+    color: #495057;
+    min-height: 1.2em;
+}
+#senderEstimates {
+    color: #0056b3;
+    font-style: italic;
+    min-height: 1.2em;
+}
+
+/* --- Transfer Rate --- */
+.transfer-rate {
+    color: #5a2a96; /* Purple-ish */
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-top: 8px;
+    min-height: 1.1em;
+}
+
+
+/* --- Receiver Video & Progress --- */
+#receiverVideoContainer {
+    position: relative;
+    max-width: 500px; /* Limit width */
+    height: auto; /* Let height adjust */
+    aspect-ratio: 4 / 3; /* Maintain aspect ratio */
+    border: 1px solid #ced4da;
+    margin: 15px auto;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #333; /* Dark background for video area */
+    border-radius: 4px;
+}
+
+#receiverVideoContainer video {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto; /* Allow video to determine width based on height constraint */
+    height: auto; /* Allow video to determine height based on width constraint */
+    object-fit: contain; /* Fit video within container bounds */
+}
+
+#receiverProgress {
+    margin-top: 1em;
+    width: 100%;
+    max-width: 90%; /* Make progress bar slightly narrower */
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 10px; /* Make progress bar slimmer */
+}
+
+/* --- Missing Chunks Info Box --- */
+.missing-info {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #fff3cd; /* Light yellow */
+    border: 1px solid #ffeeba;
+    color: #856404; /* Dark yellow/brown text */
+    border-radius: 4px;
+    font-weight: bold;
+    text-align: left; /* Align text left */
+}
+
+.missing-info span {
+    font-weight: normal;
+    word-break: break-word; /* Break long lists */
+    margin-left: 5px; /* Space after label */
+}
+#missingChunksCount {
+    font-weight: bold; /* Make count stand out */
+}
+
+/* --- QR Modal Overlay --- */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.85); /* Darker overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+#qrModalContent {
+    background-color: white;
+    padding: 25px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 95vw; /* Max width relative to viewport */
+    max-height: 95vh; /* Max height relative to viewport */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow: auto; /* Allow scrolling if content overflows */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+#qrDisplayArea {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px; /* Space below QR area */
+}
+
+/* QR code container */
+#qrCodeContainer {
+    width: 100%;
+    /* Limit max size relative to viewport height/width */
+    max-width: min(70vh, 80vw);
+    height: auto; /* Maintain aspect ratio */
+    margin: 0 auto 15px auto; /* Center and margin below */
+    line-height: 0; /* Prevent extra space if empty */
+    background-color: white; /* Ensure white background for QR */
+    padding: 5px; /* Small padding around the QR */
+    box-sizing: border-box;
+}
+
+/* Style the canvas/svg generated INSIDE the container */
+#qrCodeContainer canvas,
+#qrCodeContainer svg {
+    display: block;
+    max-width: 100%; /* Scale within container */
+    height: auto !important; /* Maintain aspect ratio (override library styles if needed) */
+    margin: 0 auto; /* Center if needed */
+}
+
+
+/* Modal Info Lines (Status, Time, Rate) */
+.modal-info {
+    min-height: 1.3em; /* Ensure consistent height */
+    margin-bottom: 5px;
+    font-size: 0.95em;
+}
+
+#qrModalStatus {
+    font-weight: bold;
+    color: #333;
+}
+
+.time-estimate {
+    color: #555;
+    font-style: italic;
+}
+
+/* Use the shared transfer-rate class */
+#qrModalTransferRate {
+     margin-bottom: 10px; /* Space before manual button if shown */
+}
+
+/* --- Modal Buttons --- */
+#qrDisplayArea #nextChunkBtn {
+    margin-top: 10px;
+    background-color: #6c757d; /* Grey */
+    color: white;
+    min-width: 150px; /* Give manual button decent width */
+}
+#qrDisplayArea #nextChunkBtn:hover:not(:disabled) {
+     background-color: #5a6268;
+}
+
+#qrModalContent .modal-stop-button {
+    margin-top: 20px;
+    background-color: #dc3545; /* Red */
+    color: white;
+    border: none; /* Already set globally, but good to be explicit */
+    min-width: 150px;
+}
+#qrModalContent .modal-stop-button:hover:not(:disabled) {
+    background-color: #b02a37;
+}
+
+
+/* --- Sender Post-Transfer Options (in Modal) --- */
+#senderPostTransferOptions {
+    width: 100%;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+#senderPostTransferOptions h3 {
+    margin-bottom: 10px;
+}
+
+#senderPostTransferOptions label {
+    display: inline-block;
+    margin-bottom: 5px;
+    font-weight: normal; /* Less emphasis than main labels */
+}
+
+#senderPostTransferOptions .specific-send-area input[type="text"] {
+    padding: 6px 10px;
+    margin-right: 8px;
+    min-width: 220px; /* Wider input for chunk lists */
+    margin-bottom: 5px; /* Reduced margin */
+}
+
+#senderPostTransferOptions > div { /* Target direct div children */
+     margin-bottom: 10px; /* Reduced spacing between sections */
+     text-align: center; /* Center content within divs */
+}
+
+
+/* Post-transfer button styling */
+#senderPostTransferOptions button {
+    background-color: #007bff; /* Blue */
+    color: white;
+    border: none;
+    margin: 5px; /* Consistent margin for all buttons */
+}
+#senderPostTransferOptions button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+
+
+#senderPostTransferOptions #finishTransferBtn {
+    background-color: #28a745; /* Green */
+}
+#senderPostTransferOptions #finishTransferBtn:hover:not(:disabled) {
+    background-color: #1e7e34;
+}
+
+
+#senderPostTransferOptions #resendAllBtn {
+    background-color: #ffc107; /* Yellow */
+    color: black;
+}
+#senderPostTransferOptions #resendAllBtn:hover:not(:disabled) {
+    background-color: #d39e00;
+}
+
+
+#senderPostTransferOptions #sendSpecificBtn {
+    background-color: #17a2b8; /* Teal */
+}
+#senderPostTransferOptions #sendSpecificBtn:hover:not(:disabled) {
+    background-color: #117a8b;
+}
+
+#sendSpecificStatus {
+    font-size: 0.9em;
+    margin-top: 0px; /* Reduced margin */
+    min-height: 1.1em;
+    margin-bottom: 10px; /* Space before next element */
+    color: #0056b3; /* Match estimate color */
+}
+
+/* --- Styling for Resend Manual Mode Checkbox --- */
+.resend-manual-mode {
+    margin-top: 15px; /* Space above checkbox */
+    padding-top: 10px;
+    border-top: 1px dashed #eee; /* Separator */
+    text-align: center;
+}
+.resend-manual-mode label {
+    font-size: 0.9em;
+    color: #555;
+    font-weight: normal;
+}
+.resend-manual-mode input[type="checkbox"] {
+    margin-left: 5px;
+}
+
+
+/* Debug area styling */
+#receiverDebug {
+    font-size: 0.8em;
+    color: #dc3545; /* Red for errors/warnings */
+    margin-top: 10px;
+    min-height: 1em;
+}

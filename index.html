@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <!-- Link to favicon (replace '/vite.svg' with your actual icon) -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <!-- Ensure proper rendering and touch zooming on mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Title of the web application -->
+    <title>QR File Transfer</title>
+    <!-- Link to the main stylesheet -->
+    <link rel="stylesheet" href="/src/style.css" />
+</head>
+
+<body>
+    <!-- Main application container -->
+    <div id="app">
+        <h1>QR Code File Transfer</h1>
+
+        <!-- Navigation buttons to switch between Sender and Receiver views -->
+        <div id="navigation">
+            <button id="showSenderBtn">Go to Sender</button>
+            <button id="showReceiverBtn">Go to Receiver</button>
+        </div>
+        <hr />
+
+        <!-- Sender View -->
+        <div id="senderView" class="view hidden">
+            <h2>Sender</h2>
+            <!-- File Input: Allows selecting single or multiple files/folders -->
+            <div>
+                <label for="fileInput">Choose File(s)/Folder:</label>
+                <!-- Note: 'webkitdirectory' enables folder selection in supporting browsers -->
+                <input type="file" id="fileInput" multiple />
+            </div>
+            <!-- Error Correction Level Selection -->
+            <div>
+                <label for="errorCorrectionLevel">Error Correction:</label>
+                <select id="errorCorrectionLevel">
+                    <option value="L">Low (~7%)</option>
+                    <option value="M" selected>Medium (~15%)</option>
+                    <option value="Q">Quartile (~25%)</option>
+                    <option value="H">High (~30%)</option>
+                </select>
+            </div>
+            <!-- Target Chunk Size Input -->
+            <div>
+                <label for="chunkSize">Target Data Bytes per QR:</label>
+                <input type="number" id="chunkSize" value="1000" 
+                min="1"
+                max="2900"
+                />
+                <small>(Adjusts based on Error Correction)</small>
+            </div>
+            <!-- Delay Between QR Codes Input -->
+            <div>
+                <label for="delay">Delay between QRs (ms):</label>
+                <input type="number" id="delay" value="500" min="50" /> <!-- Min delay slightly reduced -->
+            </div>
+            <!-- Manual Mode Checkbox (for initial transfer) -->
+            <div>
+                <label for="manualMode">Manual Mode (Initial Transfer):</label>
+                <input type="checkbox" id="manualMode" />
+            </div>
+            <!-- Start Transfer Button (enabled only when files are ready) -->
+            <button id="startTransferBtn" disabled>Start Transfer</button>
+            <!-- Status Display Area -->
+            <div id="senderStatus">Status: Waiting for file/folder...</div>
+            <!-- Progress/Chunk Count Display -->
+            <div id="senderProgress"></div>
+            <!-- Estimates Display Area (QR Count, Time) -->
+            <div id="senderEstimates"></div>
+            <!-- Transfer Rate Display -->
+            <div id="senderTransferRate" class="transfer-rate"></div>
+        </div>
+
+        <!-- Receiver View -->
+        <div id="receiverView" class="view hidden">
+            <h2>Receiver</h2>
+            <!-- Scan Control Buttons -->
+            <button id="startScanBtn">Start Scanning</button>
+            <button id="stopScanBtn" disabled>Stop Scanning</button>
+            <!-- Container for the Camera Video Feed -->
+            <div id="receiverVideoContainer">
+                <video id="receiverVideo"></video>
+            </div>
+            <!-- Receiver Status Display -->
+            <div id="receiverStatus">
+                Status: Ready to scan handshake QR...
+            </div>
+            <!-- Progress Bar for Received Chunks -->
+            <progress id="receiverProgress" value="0" max="100"></progress>
+            <!-- Information about the received file -->
+            <div id="receivedFileInfo"></div>
+            <!-- Area to display missing chunks (if any) -->
+            <div id="missingChunksInfo" class="hidden missing-info">
+                Missing <span id="missingChunksCount"></span> Chunks:
+                <span id="missingChunksList"></span>
+                <!-- Could add a button here to explicitly request missing chunks if protocol supported it -->
+            </div>
+            <!-- Transfer Rate Display -->
+            <div id="receiverTransferRate" class="transfer-rate"></div>
+            <!-- Debug Area (Optional) -->
+            <div id="receiverDebug"></div>
+        </div>
+    </div>
+
+    <!-- QR Code Modal Overlay (shown during transfer) -->
+    <div id="qrOverlay" class="overlay hidden">
+        <div id="qrModalContent">
+            <!-- Area where the QR code itself is displayed -->
+            <div id="qrDisplayArea">
+                <!-- Dedicated container for QR code canvas/svg -->
+                <div id="qrCodeContainer">
+                    <!-- QR Code (canvas/svg) will be dynamically injected here -->
+                </div>
+                <!-- Status Information within the modal -->
+                <div id="qrModalStatus" class="modal-info"></div>
+                <!-- Estimated Time Remaining -->
+                <div id="qrModalTimeEstimate" class="modal-info time-estimate"></div>
+                <!-- Transfer Rate within the modal -->
+                <div id="qrModalTransferRate" class="modal-info transfer-rate"></div>
+                <!-- Button for Manual Mode navigation -->
+                <button id="nextChunkBtn" disabled class="hidden">
+                    Next QR
+                </button>
+            </div>
+            <!-- Options shown after the initial transfer sequence completes -->
+            <div id="senderPostTransferOptions" class="hidden">
+                <h3>Transfer Display Complete</h3>
+                <p>Check receiver status. Resend if needed.</p>
+                <!-- Buttons for common actions -->
+                <div>
+                    <button id="finishTransferBtn">Finish & Close</button>
+                    <button id="resendAllBtn">Send All Again</button>
+                </div>
+                <!-- Input and button for resending specific chunks -->
+                <div class="specific-send-area">
+                    <label for="specificChunksInput">Send Specific Chunks:</label>
+                    <br />
+                    <input type="text" id="specificChunksInput" placeholder="e.g., 1,3,5-8,10" size="30" />
+                    <button id="sendSpecificBtn">Send Specific</button>
+                </div>
+                <!-- Status for the specific send operation -->
+                <div id="sendSpecificStatus" class="specific-send-status"></div>
+
+                <!-- **** NEW: Manual Mode Checkbox for Resend Actions **** -->
+                <div class="resend-manual-mode">
+                    <label for="resendManualModeCheckbox">Manual Resend (Use Next Button):</label>
+                    <input type="checkbox" id="resendManualModeCheckbox" />
+                </div>
+                <!-- **** END NEW **** -->
+
+            </div>
+            <!-- Button to stop the transfer process -->
+            <button id="stopTransferBtn" class="modal-stop-button">
+                Stop Transfer
+            </button>
+        </div>
+    </div>
+
+    <!-- Entry point script for the application -->
+    <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
