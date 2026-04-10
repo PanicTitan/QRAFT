@@ -112,13 +112,10 @@ You can try a live demo of QRAFT here:
 *   **CPU Usage:** Zipping/unzipping and Base64 operations can be CPU-intensive in the browser, especially on lower-powered devices. QR generation/scanning also adds load.
 *   **Single Point of Failure:** Closing the browser tab or navigating away will interrupt the transfer, requiring a restart.
 
-## Contributing
-
-Contributions, issues, and feature requests are welcome! Please feel free to open an issue or submit a pull request on the project repository.
-
-**(Optional: Add link to your repository here if applicable)**
+<div align="center">
+     <img src="qr-code.png" width="300" height="auto" alt="QRCODE">
+</div>
 
 ## License
 
 Distributed under the MIT License. See `LICENSE` file for more information.
-(Or state: Copyright [Year] [Your Name]. Licensed under the MIT License.)
